@@ -6,9 +6,10 @@ import (
 	"fullcycle-auction_go/configuration/logger"
 	"fullcycle-auction_go/internal/entity/auction_entity"
 	"fullcycle-auction_go/internal/internal_error"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 func (ar *AuctionRepository) FindAuctionById(
@@ -32,7 +33,7 @@ func (ar *AuctionRepository) FindAuctionById(
 	}, nil
 }
 
-func (repo *AuctionRepository) FindAuctions(
+func (ar *AuctionRepository) FindAuctions(
 	ctx context.Context,
 	status auction_entity.AuctionStatus,
 	category string,
@@ -51,7 +52,7 @@ func (repo *AuctionRepository) FindAuctions(
 		filter["productName"] = primitive.Regex{Pattern: productName, Options: "i"}
 	}
 
-	cursor, err := repo.Collection.Find(ctx, filter)
+	cursor, err := ar.Collection.Find(ctx, filter)
 	if err != nil {
 		logger.Error("Error finding auctions", err)
 		return nil, internal_error.NewInternalServerError("Error finding auctions")
